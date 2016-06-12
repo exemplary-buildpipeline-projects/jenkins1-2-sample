@@ -1,1 +1,10 @@
 target
+src/typings/
+node_modules/
+test-build/
+coverage/
+.publish/
+*.js.map
+site/js/app.js
+*.log
+.idea/
