@@ -17,12 +17,20 @@ export default class ZundokoStore {
         let key: string = localStorage.getItem(ZundokoStore.KEY);
         if (this.localSave && key !== null) {
             // あるようなら、サーバに「このキーでデータくれ」と投げる。
-            $.get("loadJson",{ key: key } , (json) => {
-                // サーバから値がおとれるようなら
-                if (key !== null) {
-                    loaded = JSON.parse(json);
-                }
-            });
+            const json = $.ajax({
+                           url: "loadJson",
+                           data: { key: key },
+                           type: "POST",
+                           cache: false,
+                           async: false
+                       }).responseText;
+
+            // サーバから値が取れるようなら
+            if (json !== null) {
+                loaded = JSON.parse(json);
+            }
+
+            return loaded;
 
         }
 
@@ -35,7 +43,7 @@ export default class ZundokoStore {
 
             // まずはLocalStrageからキーを取得
             let key: string = localStorage.getItem(ZundokoStore.KEY);
-            if (key !== null) {
+            if (key == null || key == "") {
                 // 無いなら、新しく「この端末専用」のキーを作成
                 key = this.makeId();
                 localStorage.setItem(ZundokoStore.KEY, key);
@@ -50,10 +58,9 @@ export default class ZundokoStore {
             }
             // JSON文字列にしてlocalStrage保存。
             let json: string = JSON.stringify(forSave);
-            console.log(json);
 
             // サーバに「このキーで保存して」を依頼
-             $.get("saveJson",{ key: key , json : json });
+             $.post("saveJson",{ key: key , json : json });
 
         }
     }
