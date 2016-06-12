@@ -1,17 +1,17 @@
 {
-  "name": "zundoko-kiyoshi-ts",
+  "name": "zundoko-kiyoshi-dx",
   "version": "1.0.12",
   "description": "俗に言う「ズンドコキヨシ」ロジックのTypeScript版。",
   "main": "index.js",
   "directories": {
-    "main": "src/main",
-    "test": "src/test"
+    "main": "src/main/ts",
+    "test": "src/test/ts"
   },
   "scripts": {
     "postinstall": "gulp download-typings",
     "download-typings": "gulp download-typings",
     "test": "gulp test",
-    "build": "gulp build",
+    "build": "gulp build"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
     "browserify": "^13.0.0",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
+    "gulp-util": "~3.0.7",
     "gulp-bump": "^2.0.1",
     "gulp-concat": "^2.6.0",
     "gulp-gh-pages": "^0.5.4",
@@ -33,6 +34,7 @@
     "gulp-typescript": "^2.12.1",
     "gulp-typings": "^1.3.0",
     "gulp-webserver": "^0.9.1",
+    "mkdirp": "^0.5.1",
     "intelli-espower-loader": "^1.0.1",
     "istanbul": "^0.4.2",
     "mocha": "^2.4.5",
@@ -40,6 +42,7 @@
     "remap-istanbul": "^0.5.1",
     "run-sequence": "^1.1.5",
     "tsify": "^0.14.1",
+    "through2": "^2.0.1",
     "vinyl-source-stream": "^1.1.0"
   }
 }

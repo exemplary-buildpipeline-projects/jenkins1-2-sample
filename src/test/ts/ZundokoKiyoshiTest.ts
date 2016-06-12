@@ -1,7 +1,7 @@
-/// <reference path="../typings/main.d.ts" />
+/// <reference path="../../typings/main.d.ts" />
 
 import * as assert from 'power-assert';
-import ZundokoKiyoshi from '../main/ZundokoKiyoshi';
+import ZundokoKiyoshi from '../../main/ts/ZundokoKiyoshi';
 
 describe("ZundokoKiyoshi", () => {
 

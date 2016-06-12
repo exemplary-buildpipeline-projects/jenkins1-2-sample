@@ -69,24 +69,24 @@ gulp.task('test-transpile', ['test-src-copy'], function () {
 
 gulp.task('test-retranspile-main', ['test-transpile'], function () {
     // 対象となるファイルを全部指定
-    return gulp.src([TEST_BUILD_DIR + 'main/*.ts'], { base: TEST_BUILD_DIR + 'main/' })
+    return gulp.src([TEST_BUILD_DIR + 'main/ts/*.ts'], { base: TEST_BUILD_DIR + 'main/ts/' })
         .pipe(sourcemaps.init())
         .pipe(typescript(tsProject))
     // jsプロパティを参照
         .js
     // ちょいカスタム。ソースのありか（のトップ）を指定。
         .pipe(sourcemaps.write('./', { includeContent: false, sourceRoot: '' }))
-        .pipe(gulp.dest(TEST_BUILD_DIR + 'main/'));
+        .pipe(gulp.dest(TEST_BUILD_DIR + 'main/ts/'));
 });
 
 gulp.task('pre-test', ['test-retranspile-main'], function () {
-    return gulp.src([TEST_BUILD_DIR + 'main/*.js'])
+    return gulp.src([TEST_BUILD_DIR + 'main/ts/*.js'])
         .pipe(istanbul())
         .pipe(istanbul.hookRequire());
 });
 
 gulp.task('test', ['pre-test'], function () {
-    return gulp.src([TEST_BUILD_DIR + 'test/*Test.js'], { read: false })
+    return gulp.src([TEST_BUILD_DIR + 'test/ts/*Test.js'], { read: false })
         .pipe(mocha({ reporter: 'list' }))
         .on('error', gutil.log)
         .pipe(istanbul.writeReports())
@@ -104,28 +104,8 @@ gulp.task('test', ['pre-test'], function () {
         .pipe(istanbul.enforceThresholds({ thresholds: { global: 75 } }));
 });
 
-// patchバージョンを上げる
-gulp.task('verup-patch', function () {
-    return gulp.src('./package.json')
-        .pipe(bump({ type: 'patch' }))
-        .pipe(through.obj(function (file, enc, cb) {
-            // package.json からファイルを読んで、version取り出し、クラスファイルに反映。
-            var packageJson = JSON.parse(file._contents);
-            var code = 'export default class AppVersion {\n	public static version = "' + packageJson.version + '";\n}';
-            fs.writeFile('./src/main/AppVersion.ts', code);
-            cb(null, file);
-        }))
-        .on('end', function () {
-            // 成功で終わったら、書き換えたファイルをcommit するように。
-            return gulp.src(['./package.json', './src/main/AppVersion.ts'])
-                .pipe(git.commit('patch version incliment.'));
-        })
-        .pipe(gulp.dest('./'));
-});
-
 gulp.task('build', function () {
     return browserify()
-        .add('./src/main/ts/ZundokoKiyoshi.ts')
         .add('./src/main/ts/ZundokoButtonViewModel.ts')
         .plugin('tsify', {
             target: 'ES6',
@@ -135,5 +115,3 @@ gulp.task('build', function () {
         .pipe(source('app.js'))
         .pipe(gulp.dest('./src/main/resources/static/js'));
 });
-
-
