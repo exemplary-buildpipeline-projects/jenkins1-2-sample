@@ -8,4 +8,3 @@ coverage/
 site/js/app.js
 *.log
 .idea/
-src/main/resources/static/js/app.js
