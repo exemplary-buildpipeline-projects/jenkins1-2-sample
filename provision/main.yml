@@ -1,0 +1,41 @@
+# coding:utf-8
+
+# Amazon Linux対象の設定。
+
+- hosts: all
+- become: yes
+- become_user: root
+
+  tasks:
+
+    - name: upgrade all packages
+      yum: name=* state=latest
+
+    - name: install common tools
+      yum: name=byobu disable_gpg_check=no state=installed
+
+    - name: install git
+      yum: name=git disable_gpg_check=no state=installed
+
+    # Jeknins install
+
+    - name: yum jdk install for jenkins
+      yum: name=java-1.8.0-openjdk-devel state=installed
+
+#    - name: jenkins repository instal
+#      shell: 'curl http://pkg.jenkins-ci.org/redhat/jenkins.repo > /etc/yum.repos.d/jenkins.repo'
+
+#    - name: jenkins key install
+#      shell: 'rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key'
+
+#    - name: jenkins install
+#      yum: name=jenkins state=installed
+
+    # 上記は「最新をYumまかせで入れる」やり方。今回「2.0以前のバージョンをインストールしたい」ので、以下のやり方で置こおなう。
+
+    - name: old version Jenkins install
+      shell: 'curl http://ftp.yz.yamagata-u.ac.jp/pub/misc/jenkins/redhat/jenkins-1.658-1.1.noarch.rpm > jenkins.rpm ; rpm -ivh jenkins.rpm'
+
+    - name: jenkins service set
+      service: name=jenkins enabled=yes state=started
+
