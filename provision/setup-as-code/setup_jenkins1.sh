@@ -7,7 +7,7 @@
 # JENKINS_URL='http://localhost:8080'
 JENKINS_URL='http://localhost:8080'
 
-PLUGINS='dynamicparameter docker-workflow'
+PLUGINS='git build-pipeline-plugin clone-workspace-scm'
 
 # Jenkins自体からjenkins-cli.jarを吐き出させる(PowerShellのそうとう古いやつでもいけるwget構文)
 curl "$JENKINS_URL/jnlpJars/jenkins-cli.jar" > ./jenkins-cli.jar
