@@ -8,3 +8,4 @@ coverage/
 site/js/app.js
 *.log
 .idea/
+*.retry
