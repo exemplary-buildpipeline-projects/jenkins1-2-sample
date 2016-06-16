@@ -1,0 +1,18 @@
+# coding:utf-8
+
+# Amazon Linux対象の設定。
+# 「アプリがデプロイされる先」という位置づけのサーバ
+
+- hosts: deploy-target
+- become: yes
+- become_user: root
+
+  tasks:
+
+    - name: upgrade all packages
+      yum: name=* state=latest
+
+    # Java Install
+
+    - name: yum jdk install for jenkins
+      yum: name=java-1.8.0-openjdk-devel state=installed

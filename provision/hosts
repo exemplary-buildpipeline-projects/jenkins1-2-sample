@@ -1,2 +1,3 @@
 [jenkins-server]
-x.x.x.x
+[deploy-target]
+52.197.65.128

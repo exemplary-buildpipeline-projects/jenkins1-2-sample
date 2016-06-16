@@ -2,7 +2,7 @@
 
 # Amazon Linux対象の設定。
 
-- hosts: all
+- hosts: jenkins-server
 - become: yes
 - become_user: root
 
