@@ -8,7 +8,7 @@ node {
     USER='ec2-user'
     KEY='/etc/key.pem'
 
-　　// 実処理
+    // 実処理
 
     stage '1.テスト'
     
