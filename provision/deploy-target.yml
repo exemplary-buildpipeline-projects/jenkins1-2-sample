@@ -16,3 +16,14 @@
 
     - name: yum jdk install for jenkins
       yum: name=java-1.8.0-openjdk-devel state=installed
+
+    # DDNS sync script install
+
+    - name: DDNS sync script upload
+      copy:
+        src: ./resources/ieserver-ddns.pl
+        dest: /etc/cron.hourly/ieserver-ddns.pl
+        backup: yes
+
+    - name: DDNS sync script chenge user and mode
+      shell: 'chown root:root /etc/cron.hourly/ieserver-ddns.pl && chmod 777 /etc/cron.hourly/ieserver-ddns.pl'
