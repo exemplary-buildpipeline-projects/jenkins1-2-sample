@@ -2,7 +2,7 @@ node {
 
     // 設定値系
 
-    HOST_DEV = 'zndkdev.jap.ph'
+    HOST_DEV = 'zndkdev.jpn.ph'
     HOST_PRD = 'zndk.jpn.ph'
 
     USER='ec2-user'
