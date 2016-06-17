@@ -1,61 +1,57 @@
 node {
-   stage '1.テスト'
 
-   git url: 'https://github.com/exemplary-buildpipeline-projects/jenkins1-2-sample.git'
+    // 設定値系
 
-   def mvnHome = tool 'latest'
+    HOST_DEV = 'zndkdev.jpn.ph'
+    HOST_PRD = 'zndk.jpn.ph'
 
-   sh "${mvnHome}/bin/mvn clean test"
-
-    stage '2.ビルド'
-    
-   sh "${mvnHome}/bin/mvn clean package spring-boot:repackage -Dmaven.test.skip=true"
-
-    stage '3.開発環境にデプロイ'
-    
-    HOST_DEV='zndkdev.jpn.ph'
     USER='ec2-user'
     KEY='/etc/key.pem'
-    
-    SEND_TARGET="${USER}@${HOST_DEV}"
-    SSH="ssh -i ${KEY} ${SEND_TARGET}"
-    
-    // 以前起動していたアプリをデストローイ＆ファイル削除
-    sh "${SSH} 'killall java ; rm -f ./*.jar'"
-    
-    // 実行バイナリをサーバに送り込む
-    sh "scp -i ${KEY} ./target/*.jar ${SEND_TARGET}:./"
-    
-    // javaを蹴るスクリプトをサーバに送り込む
-    sh "scp -i ${KEY} ./startup.sh  ${SEND_TARGET}:./"
-    sh "${SSH} 'chmod +x ./startup.sh'"
-    
-    // アプリ実行
-    sh "${SSH} './startup.sh'"
-    
-    stage '4.人間の判断'
-    
-    input message: '本番環境にデプロイします？', ok: 'はい！します！'
-    
-    stage '5.本番環境デプロイ'
-    
-    HOST_DEV='zndk.jpn.ph'
 
-    SEND_TARGET="${USER}@${HOST_DEV}"
-    SSH="ssh -i ${KEY} ${SEND_TARGET}"
-    
-    // 以前起動していたアプリをデストローイ＆ファイル削除
-    sh "${SSH} 'killall java ; rm -f ./*.jar'"
-    
-    // 実行バイナリをサーバに送り込む
-    sh "scp -i ${KEY} ./target/*.jar ${SEND_TARGET}:./"
-    
-    // javaを蹴るスクリプトをサーバに送り込む
-    sh "scp -i ${KEY} ./startup.sh  ${SEND_TARGET}:./"
-    sh "${SSH} 'chmod +x ./startup.sh'"
-    
+    // 実処理
+
+    stage '1.テスト'
+
+    git url: 'https://github.com/exemplary-buildpipeline-projects/jenkins1-2-sample.git'
+
+    def mvnHome = tool 'latest'
+
+    sh "${mvnHome}/bin/mvn clean test"
+
+    stage '2.ビルド'
+
+    sh "${mvnHome}/bin/mvn clean package spring-boot:repackage -Dmaven.test.skip=true"
+
+    stage '3.開発環境デプロイ'
+
+    deploy("${USER}@${HOST_DEV}" , KEY)
+
+    stage '4.人間の判断'
+
+    input message: '本番環境へのデプロイはどうします？', ok: 'する'
+
+    stage '5.本番環境デプロイ'
+
+    deploy("${USER}@${HOST_PRD}" , KEY)
+
+}
+
+def deploy(userAndServer , keyFile) {
+
+    def ssh = "ssh -i ${keyFile} ${userAndServer}"
+    def scp = "scp -i ${keyFile}"
+
+    // 現在起動中のアプリをkill＆ファイル削除
+    sh "${ssh} 'killall java ; rm -f ./*.jar'"
+
+    // 送り込む
+    sh "${scp} ./target/*.jar ${userAndServer}:./"
+
+    // javaコマンドでspring-bootアプリを起動
+    sh "${scp} ./startup.sh  ${userAndServer}:./"
+    sh "${ssh} 'chmod +x ./startup.sh'"
+
     // アプリ実行
-    sh "${SSH} './startup.sh'"
-    
+    sh "${ssh} './startup.sh'"
 
 }
