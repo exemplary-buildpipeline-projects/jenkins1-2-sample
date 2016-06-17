@@ -39,3 +39,4 @@
     - name: jenkins service set
       service: name=jenkins enabled=yes state=started
 
+    # ssh をNon警告で打てる設定を行う
