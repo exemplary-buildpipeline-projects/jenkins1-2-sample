@@ -26,13 +26,8 @@ node {
 
     deploy("${USER}@${HOST_DEV}" , KEY)
 
-    stage '4.人間の判断'
+    stage '4.本番環境へのデプロイはキャンセル'
 
-    input message: '本番環境へのデプロイはどうします？', ok: 'する'
-
-    stage '5.本番環境デプロイ'
-
-    deploy("${USER}@${HOST_PRD}" , KEY)
 
 }
 
